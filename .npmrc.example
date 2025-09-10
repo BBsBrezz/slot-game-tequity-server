@@ -1,0 +1,4 @@
+# Private registry authentication
+# Copy this file to .npmrc and add your GitHub Personal Access Token
+# //npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN
+@slotify:registry=https://npm.pkg.github.com/

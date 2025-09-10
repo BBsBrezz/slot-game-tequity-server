@@ -1,0 +1,12 @@
+node_modules/
+lib/
+*.log
+.env
+.DS_Store
+dist/
+coverage/
+.nyc_output/
+.vscode/
+*.tgz
+*.tar.gz
+.npmrc

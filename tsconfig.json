@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "target": "ES2018",
+        "module": "commonjs",
+        "lib": ["ES2018"],
+        "declaration": true,
+        "outDir": "./lib",
+        "rootDir": "./",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "resolveJsonModule": true
+    },
+    "include": [
+        "games/**/*",
+        "common/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "lib"
+    ]
+}
