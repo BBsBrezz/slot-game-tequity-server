@@ -1,4 +1,4 @@
-FROM node:20-slim
+FROM node:24-slim
 RUN mkdir -p /usr/src/tequity/games
 WORKDIR /usr/src/tequity/games
 COPY . .
