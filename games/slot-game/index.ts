@@ -34,6 +34,19 @@ export const index: IGame = {
         },
     },
 
+    config: (variant?: string) => {
+        // Return game configuration
+        return {
+            symbols: SYMBOLS,
+            reelCount: 3,
+            winMultiplier: 2,
+            gameName: "Slot Game",
+            gameVersion: "1.0.0",
+            // Private config (starts with _) won't be sent to client
+            _internalConfig: "server-only-data"
+        };
+    },
+
     stats: {
         iterations: new Iterations(),
         rtp: new RTP(),
@@ -45,9 +58,23 @@ export const index: IGame = {
 
     cheats: {
         "main": {
-            "forceWin": (wager: any) => wager.win > 0,
-            "forceBigWin": (wager: any) => wager.win > wager.bet * 2, // 調整為符合原始遊戲的2倍上限
+            "win": (wager: any) => wager.win > 0,
+            "bigWin": (wager: any) => wager.win > wager.bet * 2,
         },
+    },
+
+    validate: (request, betLimits) => {
+        // Custom validation for side bets
+        if (request.action !== "main") {
+            // Only main action is allowed for this simple slot game
+            return false;
+        }
+
+        // Validate bet limits
+        if (request.bet < betLimits.minBet) return false;
+        if (request.bet > betLimits.maxBet) return false;
+
+        return true;
     },
 
     simulate({wagers}: {wagers: any[]}, random: IRandom) {
@@ -57,15 +84,16 @@ export const index: IGame = {
                 action: "main",
             };
         }
-        
+
         // Always return main action for slot games
         return {
             action: "main",
         };
     },
 
-    action() {
-        // Simple slot game only has main action
+    action({next, config}: {next: string[], config: any}, random: IRandom) {
+        // For simple slot game, always return main action
+        // This is called when RGS needs to auto-complete rounds
         return {
             action: "main",
         };
@@ -104,7 +132,39 @@ export const index: IGame = {
             state: newState,
         };
     },
+
+    evaluate: (type: string, wagers: any[]) => {
+        switch (type) {
+            case "regulatory-pt":
+                // Portugal regulatory compliance
+                return {
+                    "sm_result": createSmResult(wagers),
+                    "descr_ap": "SlotGame"
+                };
+            default:
+                return {};
+        }
+    },
 };
+
+/**
+ * Create sm_result for Portugal regulatory compliance
+ */
+function createSmResult(wagers: any[]): string {
+    // Simplified sm_result format for demonstration
+    // Format: "0:symbol1;symbol2;symbol3#"
+    if (wagers.length === 0) return "";
+
+    const results = wagers.map((wager) => {
+        if (wager.data && wager.data.symbols) {
+            const symbolIndices = wager.data.symbols.map((sym: string) => SYMBOLS.indexOf(sym));
+            return `${symbolIndices.join(';')}`;
+        }
+        return "0;0;0";
+    });
+
+    return `0:${results.join('#')}#`;
+}
 
 /**
  * Get a random symbol - 完全對應原始遊戲邏輯

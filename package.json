@@ -11,13 +11,10 @@
         "build": "rm -Rf lib/* && tsc",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
-        "start": "PROVIDER=slot-game-provider GAMES_PATH=lib/games/*/index.js node node_modules/@slotify/gdk/lib/index.js",
-        "start:dev": "PROVIDER=slot-game-provider GAMES_PATH=games/*/index.ts ts-node-dev node_modules/@slotify/gdk/lib/index.js",
+        "start": "node mock-api-server.js",
         "obfuscate": "npx --yes javascript-obfuscator --target=node --options-preset=low-obfuscation --output lib/ lib/ && rm -Rf lib/**/*.d.ts && rm -Rf ./**/*.ts"
     },
     "dependencies": {
-        "@slotify/gdk": "^4.0.9",
-        "@slotify/rng": "^3.0.4",
         "body-parser": "^2.2.0",
         "cors": "^2.8.5",
         "express": "^5.1.0",
